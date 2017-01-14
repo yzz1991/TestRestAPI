@@ -1,0 +1,212 @@
+{
+  "org_name": "1115161018115859",
+  "app_name": "appdemo",
+  "rest_url": "https://a1.easemob.com/",
+  "Token": {
+    "api": "token",
+    "method": "POST",
+    "name": "获取管理员Token",
+    "body": {
+      "grant_type": "client_credentials",
+      "client_id": "YXA6wWPUwJTcEeanhEVDgQXM6Q",
+      "client_secret": "YXA6S-7IN-XTBu1T7I6Iw3rE3wyAvlc"
+    }
+  },
+  "Users": [
+    {
+      "name": "注册用户(单个)",
+      "api": "user",
+      "method": "POST",
+      "body": {
+        "username": "test1",
+        "password": "1",
+        "nickname": "测试账户1"
+      }
+    },
+    {
+      "name": "注册用户(批量)",
+      "api": "user",
+      "method": "POST",
+      "body": [
+        {
+          "username": "test2",
+          "password": "1",
+          "nickname": "测试账户2"
+        },
+        {
+          "username": "test3",
+          "password": "1",
+          "nickname": "测试账户3"
+        },
+        {
+          "username": "test4",
+          "password": "1",
+          "nickname": "测试账户4"
+        },
+        {
+          "username": "test5",
+          "password": "1",
+          "nickname": "测试账户5"
+        },
+        {
+          "username": "test6",
+          "password": "1",
+          "nickname": "测试账户6"
+        },
+        {
+          "username": "test7",
+          "password": "1",
+          "nickname": "测试账户7"
+        },
+        {
+          "username": "test8",
+          "password": "1",
+          "nickname": "测试账户8"
+        },
+        {
+          "username": "test9",
+          "password": "1",
+          "nickname": "测试账户9"
+        },
+        {
+          "username": "test10",
+          "password": "1",
+          "nickname": "测试账户10"
+        }
+      ]
+    },
+    {
+      "name": "获取用户(单个)",
+      "api": "users/test1",
+      "method": "GET"
+    },
+    {
+      "name": "获取用户(批量)",
+      "api": "users?limit=20",
+      "method": "GET"
+    },
+    {
+      "name": "删除用户(单个)",
+      "api": "user/test1",
+      "method": "DELETE"
+    },
+    {
+      "name": "删除用户(批量)",
+      "api": "user?limit=5",
+      "method": "DELETE"
+    },
+    {
+      "name": "重置用户密码",
+      "api": "user/test2/password",
+      "method": "PUT",
+      "body": {
+        "newpassword": "123"
+      }
+    },
+    {
+      "name": "修改用户昵称",
+      "api": "user/test2",
+      "method": "PUT",
+      "body": {
+        "nickname": "测试2"
+      }
+    },
+    {
+      "name": "给IM用户添加好友",
+      "api": "users/test2/contacts/users/test3",
+      "method": "POST"
+    },
+    {
+      "name": "查看好友",
+      "api": "users/test2/contacts/users",
+      "method": "GET"
+    },
+    {
+      "name": "解除 IM 用户的好友关系",
+      "api": "users/test2/contacts/users/test3",
+      "method": "DELETE"
+    },
+    {
+      "name": "往 IM 用户的黑名单中加人",
+      "api": "user/test2/blocks/users",
+      "method": "POST",
+      "body": {
+        "usernames": [
+          "test4",
+          "test5"
+        ]
+      }
+    },
+    {
+      "name": "获取 IM 用户的黑名单",
+      "api": "users/test2/blocks/users",
+      "method": "GET"
+    },
+    {
+      "name": "从 IM 用户的黑名单中减人",
+      "api": "user/test2/blocks/users/test4",
+      "method": "DELETE"
+    },
+    {
+      "name": "查看用户在线状态",
+      "api": "user/test2/status",
+      "method": "GET"
+    },
+    {
+      "name": "查询离线消息数",
+      "api": "user/test2/offline_msg_count",
+      "method": "GET"
+    },
+    {
+      "name": "用户账号禁用",
+      "api": "user/test2/deactivate",
+      "method": "POST"
+    },
+    {
+      "name": "用户账号解禁",
+      "api": "user/test2/activate",
+      "method": "POST"
+    },
+    {
+      "name": "强制用户下线",
+      "api": "user/test2/disconnect",
+      "method": "GET"
+    }
+  ],
+  "Chat": [
+    {
+      "name": "注册用户",
+      "api": "user",
+      "method": "POST",
+      "body": {
+        "username": "test1",
+        "password": "1",
+        "nickname": "测试账户1"
+      }
+    }
+  ],
+  "ChatGroup": [
+    {
+      "name": "注册用户",
+      "api": "user",
+      "method": "POST",
+      "body": {
+        "username": "test1",
+        "password": "1",
+        "nickname": "测试账户1"
+      }
+    }
+  ],
+  "ChatRoom": [
+    {
+      "name": "注册用户",
+      "api": "user",
+      "method": "POST",
+      "body": {
+        "username": "test1",
+        "password": "1",
+        "nickname": "测试账户1"
+      }
+    }
+  ]
+}

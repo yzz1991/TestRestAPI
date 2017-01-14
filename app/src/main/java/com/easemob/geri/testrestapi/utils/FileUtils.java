@@ -35,7 +35,7 @@ public class FileUtils {
      * @return 返回String
      */
     public String getRestUser(){
-        File file = new File(Environment.getExternalStorageDirectory(), "rest_user.json");
+        File file = new File(Environment.getExternalStorageDirectory(), "Untitled.json");
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             try {
                 FileInputStream inputStream = new FileInputStream(file);
