@@ -22,7 +22,7 @@ public class HttpManager {
 
     private String mBaseUrl = "";
     private String mAccessToken;
-    private RestResultBean restResultBean;
+//    private RestResultBean restResultBean;
 
     // 超时时间
     private int connectTimeout = 5 * 1000;
@@ -31,7 +31,7 @@ public class HttpManager {
     private HttpURLConnection conn;
 
     private HttpManager() {
-        restResultBean = new RestResultBean();
+//        restResultBean = new RestResultBean();
     }
 
     public static HttpManager getInstance() {
@@ -80,6 +80,7 @@ public class HttpManager {
      * @param requestAPI 请求 API
      */
     public RestResultBean onHttpGet(String requestAPI) {
+        RestResultBean bean = new RestResultBean();
         try {
             initConnection(requestAPI);
             // 设置请求方式
@@ -113,9 +114,9 @@ public class HttpManager {
                 result = outputStream.toString();
             }
             Log.d(TAG, "请求结果: "+ statusCode + result);
-            restResultBean.setCode(statusCode);
-            restResultBean.setResult(result);
-            return restResultBean;
+            bean.setCode(statusCode);
+            bean.setResult(result);
+            return bean;
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -131,6 +132,7 @@ public class HttpManager {
      * @param requestBody 请求体
      */
     public RestResultBean onHttpPost(String requestAPI, Object requestBody) {
+        RestResultBean bean = new RestResultBean();
         try {
             initConnection(requestAPI);
 
@@ -178,9 +180,9 @@ public class HttpManager {
                 result = outputStream.toString();
             }
             Log.d(TAG, "请求结果: "+ statusCode + result);
-            restResultBean.setCode(statusCode);
-            restResultBean.setResult(result);
-            return restResultBean;
+            bean.setCode(statusCode);
+            bean.setResult(result);
+            return bean;
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -196,6 +198,7 @@ public class HttpManager {
      * @param requestBody 请求体
      */
     public RestResultBean onHttpPut(String requestAPI, Object requestBody) {
+        RestResultBean bean = new RestResultBean();
         try {
             initConnection(requestAPI);
 
@@ -241,9 +244,9 @@ public class HttpManager {
                 result = outputStream.toString();
             }
             Log.d(TAG, "请求结果: "+ statusCode + result);
-            restResultBean.setCode(statusCode);
-            restResultBean.setResult(result);
-            return restResultBean;
+            bean.setCode(statusCode);
+            bean.setResult(result);
+            return bean;
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -256,6 +259,7 @@ public class HttpManager {
      * 对 DELETE 请求进行封装
      */
     public RestResultBean onHttpDelete(String requestAPI) {
+        RestResultBean bean = new RestResultBean();
         try {
             initConnection(requestAPI);
             // 设置请求方式
@@ -289,9 +293,9 @@ public class HttpManager {
                 result = outputStream.toString();
             }
             Log.d(TAG, "请求结果: "+ statusCode + result);
-            restResultBean.setCode(statusCode);
-            restResultBean.setResult(result);
-            return restResultBean;
+            bean.setCode(statusCode);
+            bean.setResult(result);
+            return bean;
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {

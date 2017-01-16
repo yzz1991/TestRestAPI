@@ -91,11 +91,6 @@
       "method": "DELETE"
     },
     {
-      "name": "删除用户(批量)",
-      "api": "user?limit=5",
-      "method": "DELETE"
-    },
-    {
       "name": "重置用户密码",
       "api": "user/test2/password",
       "method": "PUT",
@@ -175,37 +170,256 @@
   ],
   "Chat": [
     {
-      "name": "注册用户",
-      "api": "user",
+      "name": "发送文本消息",
+      "api": "messages",
       "method": "POST",
       "body": {
-        "username": "test1",
-        "password": "1",
-        "nickname": "测试账户1"
+        "target_type": "users",
+        "target": [
+          "test4",
+          "test5"
+        ],
+        "msg": {
+          "type": "txt",
+          "msg": "message from rest"
+        },
+        "from": "test7"
       }
+    },
+    {
+      "name": "发送CMD消息",
+      "api": "messages",
+      "method": "POST",
+      "body": {
+        "target_type": "users",
+        "target": [
+          "test4",
+          "test5"
+        ],
+        "msg": {
+          "type": "cmd",
+          "action": "action1"
+        },
+        "from": "test7"
+      }
+    },
+    {
+      "name": "发送扩展消息",
+      "api": "messages",
+      "method": "POST",
+      "body": {
+        "target_type": "users",
+        "target": [
+          "test4",
+          "test5"
+        ],
+        "msg": {
+          "type": "txt",
+          "msg": "消息"
+        },
+        "from": "test7",
+        "ext": {
+          "attr1": "v1"
+        }
+      }
+    },
+    {
+      "name": "根据时间下载历史消息文件",
+      "api": "chatmessages/2017011515",
+      "method": "GET"
     }
   ],
   "ChatGroup": [
     {
-      "name": "注册用户",
-      "api": "user",
+      "name": "创建一个Public群组",
+      "api": "chatgroups",
       "method": "POST",
       "body": {
-        "username": "test1",
-        "password": "1",
-        "nickname": "测试账户1"
+        "groupname": "这是一个公共群组",
+        "desc": "RST created group",
+        "public": true,
+        "allowinvites": false,
+        "maxusers": 800,
+        "approval": true,
+        "owner": "test7",
+        "members": [
+          "test4","test5"
+        ]
+      }
+    },
+    {
+      "name": "创建一个Private群组",
+      "api": "chatgroups",
+      "method": "POST",
+      "body": {
+        "groupname": "这是一个私有群组",
+        "desc": "RST created group",
+        "public": false,
+        "allowinvites": false,
+        "maxusers": 500,
+        "approval": true,
+        "owner": "test7",
+        "members": [
+          "test4",
+          "test5"
+        ]
+      }
+    },
+    {
+      "name": "获取所有群组",
+      "api": "chatgroups",
+      "method": "GET"
+    },
+    {
+      "name": "分页获取 APP 下的群组",
+      "api": "chatgroups?limit=10",
+      "method": "GET"
+    },
+    {
+      "name": "获取群组详情",
+      "api": "chatgroups/287710442455826968",
+      "method": "GET"
+    },
+    {
+      "name": "修改群组信息",
+      "api": "chatgroups/287710442455826968",
+      "method": "PUT",
+      "body": {
+        "groupname": "test rest group",
+        "description": "updategroupinfo",
+        "maxusers": 300
+      }
+    },
+    {
+      "name": "添加群组成员[单个]",
+      "api": "chatgroups/287710442455826968/users/test6",
+      "method": "POST"
+    },
+    {
+      "name": "添加群组成员[批量]",
+      "api": "chatgroups/287710442455826968/users",
+      "method": "POST",
+      "body": {
+        "usernames":["test3","test4","test5"]
+      }
+
+    },
+    {
+      "name": "获取群组所有成员",
+      "api": "chatgroups/287710442455826968/users",
+      "method": "GET"
+    },
+    {
+      "name": "移除群组成员[单个]",
+      "api": "chatgroups/287710442455826968/users/test6",
+      "method": "DELETE"
+    },
+    {
+      "name": "获取一个用户的所有群组",
+      "api": "users/test5/joined_chatgroups",
+      "method": "GET"
+    },
+    {
+      "name": "添加用户至群组黑名单[单个]",
+      "api": "chatgroups/287710442455826968/blocks/users/test3",
+      "method": "POST"
+    },
+    {
+      "name": "查询群组黑名单",
+      "api": "chatgroups/287710442455826968/blocks/users",
+      "method": "GET"
+    },
+    {
+      "name": "从群组黑名单移除用户[单个]",
+      "api": "chatgroups/287710442455826968/blocks/users/test3",
+      "method": "DELETE"
+    },
+    {
+      "name": "转让群组",
+      "api": "chatgroups/287700396548293144",
+      "method": "PUT",
+      "body": {
+        "newowner": "yzz2"
       }
     }
   ],
   "ChatRoom": [
     {
-      "name": "注册用户",
-      "api": "user",
+      "name": "创建聊天室",
+      "api": "chatrooms",
       "method": "POST",
       "body": {
-        "username": "test1",
-        "password": "1",
-        "nickname": "测试账户1"
+        "name": "test chatroom",
+        "description": "chatroom description",
+        "maxusers": 5000,
+        "owner": "test7",
+        "members":["test4","test5"]
+      }
+    },
+    {
+      "name": "获取APP下所有聊天室",
+      "api": "chatrooms",
+      "method": "GET"
+    },
+    {
+      "name": "获取一个聊天室详情",
+      "api": "chatrooms/287710579924140556",
+      "method": "GET"
+    },
+    {
+      "name": "修改聊天室信息",
+      "api": "chatrooms/287710579924140556",
+      "method": "PUT",
+      "body": {
+        "name": "修改聊天室信息",
+        "description": "chatroom description",
+        "maxusers": 1000
+      }
+    },
+    {
+      "name": "获取用户加入的聊天室",
+      "api": "chatrooms/test4/joined_chatrooms",
+      "method": "GET"
+    },
+    {
+      "name": "添加聊天室成员[单个]",
+      "api": "chatrooms/287710579924140556/users/test6",
+      "method": "POST"
+    },
+    {
+      "name": "添加聊天室成员[批量]",
+      "api": "chatrooms/287710579924140556/users",
+      "method": "POST",
+      "body": {
+        "usernames": [
+          "test8"
+        ]
+      }
+    },
+    {
+      "name": "删除聊天室成员[单个]",
+      "api": "chatrooms/287710579924140556/users/test8",
+      "method": "DELETE"
+    },
+    {
+      "name": "删除聊天室",
+      "api": "chatrooms/287708186222264848",
+      "method": "DELETE"
+    },
+    {
+      "name": "发聊天室消息",
+      "api": "messages",
+      "method": "POST",
+      "body": {
+        "target_type": "chatrooms",
+        "target": [
+          "287710579924140556"
+        ],
+        "msg": {
+          "type": "txt",
+          "msg": "message from rest"
+        },
+        "from": "yzz"
       }
     }
   ]
