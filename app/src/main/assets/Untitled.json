@@ -1,7 +1,11 @@
 {
   "org_name": "1115161018115859",
   "app_name": "appdemo",
-  "rest_url": "https://a1.easemob.com/",
+  "Dns": {
+    "api": "http://rs.easemob.com/easemob/server.json?app_key=",
+    "method": "GET",
+    "name": "获取dns列表"
+  },
   "Token": {
     "api": "token",
     "method": "POST",
@@ -227,11 +231,16 @@
       "name": "根据时间下载历史消息文件",
       "api": "chatmessages/2017011515",
       "method": "GET"
+    },
+    {
+      "name": "根据时间条件拉取历史消息",
+      "api": "chatmessages?ql=select+*+where+timestamp>1478354461757",
+      "method": "GET"
     }
   ],
   "ChatGroup": [
     {
-      "name": "创建一个Public群组",
+      "name": "创建群组",
       "api": "chatgroups",
       "method": "POST",
       "body": {
@@ -248,24 +257,6 @@
       }
     },
     {
-      "name": "创建一个Private群组",
-      "api": "chatgroups",
-      "method": "POST",
-      "body": {
-        "groupname": "这是一个私有群组",
-        "desc": "RST created group",
-        "public": false,
-        "allowinvites": false,
-        "maxusers": 500,
-        "approval": true,
-        "owner": "test7",
-        "members": [
-          "test4",
-          "test5"
-        ]
-      }
-    },
-    {
       "name": "获取所有群组",
       "api": "chatgroups",
       "method": "GET"
@@ -277,12 +268,12 @@
     },
     {
       "name": "获取群组详情",
-      "api": "chatgroups/287710442455826968",
+      "api": "chatgroups/%1$s",
       "method": "GET"
     },
     {
       "name": "修改群组信息",
-      "api": "chatgroups/287710442455826968",
+      "api": "chatgroups/%1$s",
       "method": "PUT",
       "body": {
         "groupname": "test rest group",
@@ -292,12 +283,12 @@
     },
     {
       "name": "添加群组成员[单个]",
-      "api": "chatgroups/287710442455826968/users/test6",
+      "api": "chatgroups/%1$s/users/test6",
       "method": "POST"
     },
     {
       "name": "添加群组成员[批量]",
-      "api": "chatgroups/287710442455826968/users",
+      "api": "chatgroups/%1$s/users",
       "method": "POST",
       "body": {
         "usernames":["test3","test4","test5"]
@@ -306,12 +297,12 @@
     },
     {
       "name": "获取群组所有成员",
-      "api": "chatgroups/287710442455826968/users",
+      "api": "chatgroups/%1$s/users",
       "method": "GET"
     },
     {
       "name": "移除群组成员[单个]",
-      "api": "chatgroups/287710442455826968/users/test6",
+      "api": "chatgroups/%1$s/users/test6",
       "method": "DELETE"
     },
     {
@@ -321,26 +312,31 @@
     },
     {
       "name": "添加用户至群组黑名单[单个]",
-      "api": "chatgroups/287710442455826968/blocks/users/test3",
+      "api": "chatgroups/%1$s/blocks/users/test3",
       "method": "POST"
     },
     {
       "name": "查询群组黑名单",
-      "api": "chatgroups/287710442455826968/blocks/users",
+      "api": "chatgroups/%1$s/blocks/users",
       "method": "GET"
     },
     {
       "name": "从群组黑名单移除用户[单个]",
-      "api": "chatgroups/287710442455826968/blocks/users/test3",
+      "api": "chatgroups/%1$s/blocks/users/test3",
       "method": "DELETE"
     },
     {
       "name": "转让群组",
-      "api": "chatgroups/287700396548293144",
+      "api": "chatgroups/%1$s",
       "method": "PUT",
       "body": {
-        "newowner": "yzz2"
+        "newowner": "test4"
       }
+    },
+    {
+      "name": "删除群组",
+      "api": "chatgroups/%1$s",
+      "method": "DELETE"
     }
   ],
   "ChatRoom": [
@@ -363,12 +359,12 @@
     },
     {
       "name": "获取一个聊天室详情",
-      "api": "chatrooms/287710579924140556",
+      "api": "chatrooms/%1$s",
       "method": "GET"
     },
     {
       "name": "修改聊天室信息",
-      "api": "chatrooms/287710579924140556",
+      "api": "chatrooms/%1$s",
       "method": "PUT",
       "body": {
         "name": "修改聊天室信息",
@@ -378,17 +374,17 @@
     },
     {
       "name": "获取用户加入的聊天室",
-      "api": "chatrooms/test4/joined_chatrooms",
+      "api": "user/test4/joined_chatrooms",
       "method": "GET"
     },
     {
       "name": "添加聊天室成员[单个]",
-      "api": "chatrooms/287710579924140556/users/test6",
+      "api": "chatrooms/%1$s/users/test6",
       "method": "POST"
     },
     {
       "name": "添加聊天室成员[批量]",
-      "api": "chatrooms/287710579924140556/users",
+      "api": "chatrooms/%1$s/users",
       "method": "POST",
       "body": {
         "usernames": [
@@ -398,12 +394,7 @@
     },
     {
       "name": "删除聊天室成员[单个]",
-      "api": "chatrooms/287710579924140556/users/test8",
-      "method": "DELETE"
-    },
-    {
-      "name": "删除聊天室",
-      "api": "chatrooms/287708186222264848",
+      "api": "chatrooms/%1$s/users/test8",
       "method": "DELETE"
     },
     {
@@ -413,7 +404,7 @@
       "body": {
         "target_type": "chatrooms",
         "target": [
-          "287710579924140556"
+          "%1$s"
         ],
         "msg": {
           "type": "txt",
@@ -421,6 +412,18 @@
         },
         "from": "yzz"
       }
+    },
+    {
+      "name": "删除聊天室",
+      "api": "chatrooms/%1$s",
+      "method": "DELETE"
+    },
+  ],
+  "File":[
+    {
+      "name": "上传文件",
+      "api": "chatfiles",
+      "method": "POST"
     }
   ]
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.easemob.geri.testrestapi.bean.RestResultBean;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -299,6 +300,83 @@ public class HttpManager {
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 以POST方式上传文件
+     *
+     * @param requestAPI 请求地址
+     * @return
+     */
+    public RestResultBean postUpLoadFile(String requestAPI, InputStream fileInputStream) {
+        // 这个表示表单数据的分隔符，这个要设置在请求头中，同时请求体也会用到
+        String boundary = "--------------------------275686307391441482543473";
+        String end = "\r\n";
+        String twoHyphens = "--";
+        RestResultBean bean = new RestResultBean();
+        try {
+            initConnection(requestAPI);
+            // 允许Input、Output，不使用Cache
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            // 设置以POST方式进行传送
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-type", "multipart/form-data; boundary=" + boundary);
+            // 构造DataOutputStream流
+            DataOutputStream ds = new DataOutputStream(conn.getOutputStream());
+            // 添加分隔符
+            ds.writeBytes(twoHyphens + boundary + end);
+            ds.writeBytes("Content-Disposition: form-data; "
+                    + "name=\"file\";filename=\"easemob.png\"" + end);
+            ds.writeBytes(end);
+            // 设置每次写入1024bytes
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            int length = -1;
+            // 从文件读取数据至缓冲区
+            while ((length = fileInputStream.read(buffer)) != -1) {
+                // 将资料写入DataOutputStream中
+                ds.write(buffer, 0, length);
+            }
+            ds.writeBytes(end);
+            // 添加分隔符
+            ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
+            // 关闭流
+            fileInputStream.close();
+            ds.flush();
+            // 根据响应码判断请求结果
+            int statusCode = conn.getResponseCode();
+            String result = "";
+            if(statusCode == 200){
+                StringBuffer sb = new StringBuffer();
+                // 获取响应流
+                InputStream is = conn.getInputStream();
+                int ch;
+                while ((ch = is.read()) != -1) {
+                    sb.append((char) ch);
+                }
+                // 关闭DataOutputStream
+                ds.close();
+                result = sb.toString();
+            }else{
+                InputStream inputStream = conn.getErrorStream();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] butter = new byte[1024];
+                int len = 0;
+                while ((len = inputStream.read(butter)) != -1) {
+                    outputStream.write(butter, 0, len);
+                }
+                result = outputStream.toString();
+            }
+            Log.d(TAG, "请求结果: "+ statusCode + result);
+            bean.setCode(statusCode);
+            bean.setResult(result);
+            return bean;
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
