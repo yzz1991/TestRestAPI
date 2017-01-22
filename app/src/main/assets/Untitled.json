@@ -228,11 +228,6 @@
       }
     },
     {
-      "name": "根据时间下载历史消息文件",
-      "api": "chatmessages/2017011515",
-      "method": "GET"
-    },
-    {
       "name": "根据时间条件拉取历史消息",
       "api": "chatmessages?ql=select+*+where+timestamp>1478354461757",
       "method": "GET"

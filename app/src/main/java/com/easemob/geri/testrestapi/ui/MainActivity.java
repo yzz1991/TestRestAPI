@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.easemob.geri.testrestapi.R;
 import com.easemob.geri.testrestapi.RestResultAdapter;
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
             super.handleMessage(msg);
             if(msg.what == 1){
                 mAdapter.notifyDataSetChanged();
+            }else if(msg.what == 2){
+                btnToken.setText("正在跑...");
+            }else if(msg.what == 3){
+                btnToken.setText("开始");
             }
         }
     };
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private String appName;
     private String groupid;
     private String chatRoomId;
+    private boolean isflag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +81,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 readSDCardJson();
-                startRestAPI();
+                if(isflag){
+                    Toast.makeText(MainActivity.this,"亲，正在努力的跑向终点，请稍等片刻！", Toast.LENGTH_SHORT).show();
+                }else{
+                    startRestAPI();
+                }
+
             }
         });
         //设置RecyclerView点击事件
@@ -111,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override public void run() {
                 try {
+                    isflag = true;
+                    handler.sendEmptyMessage(2);
                     testdns();
                     testTokenAPI();
                     testUserAPI();
@@ -118,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
                     testChatGroupAPI();
                     testChatRoomAPI();
                     testFile();
+                    isflag = false;
+                    handler.sendEmptyMessage(3);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -295,6 +311,9 @@ public class MainActivity extends AppCompatActivity {
             list.add(bean);
             handler.sendEmptyMessage(1);
 //            JSONObject resultObject = new JSONObject(bean.getResult());
+            //全部执行完后baseurl置空
+            HttpManager.getInstance().setBaseUrl("");
+
         }
     }
 
