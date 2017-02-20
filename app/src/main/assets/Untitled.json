@@ -1,19 +1,30 @@
 {
   "org_name": "1115161018115859",
   "app_name": "appdemo",
-  "Dns": {
+  "grant_type": "client_credentials",
+  "client_id": "YXA6wWPUwJTcEeanhEVDgQXM6Q",
+  "client_secret": "YXA6S-7IN-XTBu1T7I6Iw3rE3wyAvlc",
+  "Dns": [
+    {
+      "api": "http://rs.easemob.com/easemob/server.xml?app_key=",
+      "method": "GET",
+      "name": "获取dns列表(xml)"
+    },
+    {
     "api": "http://rs.easemob.com/easemob/server.json?app_key=",
     "method": "GET",
-    "name": "获取dns列表"
-  },
+    "name": "获取dns列表(json)"
+    }
+
+  ],
   "Token": {
     "api": "token",
     "method": "POST",
     "name": "获取管理员Token",
     "body": {
-      "grant_type": "client_credentials",
-      "client_id": "YXA6wWPUwJTcEeanhEVDgQXM6Q",
-      "client_secret": "YXA6S-7IN-XTBu1T7I6Iw3rE3wyAvlc"
+      "grant_type": "%1$s",
+      "client_id": "%2$s",
+      "client_secret": "%3$s"
     }
   },
   "Users": [
@@ -226,6 +237,31 @@
           "attr1": "v1"
         }
       }
+    },{
+      "name": "上传文件",
+      "api": "chatfiles",
+      "method": "POST"
+    },
+    {
+      "name": "发送附件消息",
+      "api": "messages",
+      "method": "POST",
+      "body":{
+        "target_type" : "users",
+        "target" : ["test4"],
+        "msg" : {
+          "type" : "file",
+          "url": "https://a1.easemob.com/easemob-demo/chatdemoui/chatfiles/%1$s",
+          "filename": "24849.jpg",
+          "secret": "%2$s"
+        },
+        "from" : "test7"
+      }
+    },
+    {
+      "name": "获取用户的历史消息",
+      "api": "chatmessages?ql=select+*+where+to='test3'",
+      "method": "GET"
     },
     {
       "name": "根据时间条件拉取历史消息",
@@ -412,13 +448,6 @@
       "name": "删除聊天室",
       "api": "chatrooms/%1$s",
       "method": "DELETE"
-    },
-  ],
-  "File":[
-    {
-      "name": "上传文件",
-      "api": "chatfiles",
-      "method": "POST"
     }
   ]
 }

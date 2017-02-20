@@ -64,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
     private String groupid;
     private String chatRoomId;
     private boolean isflag = false;
+    private String uuid;
+    private String secret;
+    private String grant_type;
+    private String client_id;
+    private String client_secret;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
         list.clear();
         orgName = obj.optString("org_name");
         appName = obj.optString("app_name");
+        grant_type = obj.optString("grant_type");
+        client_id = obj.optString("client_id");
+        client_secret = obj.optString("client_secret");
         new Thread(new Runnable() {
             @Override public void run() {
                 try {
@@ -128,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
                     testTokenAPI();
                     testUserAPI();
                     testMessageAPI();
+//                    testFile();
                     testChatGroupAPI();
                     testChatRoomAPI();
-                    testFile();
                     isflag = false;
                     handler.sendEmptyMessage(3);
 
@@ -145,24 +153,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void testdns() throws JSONException {
-        JSONObject dnsObject = obj.optJSONObject("Dns");
-        String name = dnsObject.optString("name");
-        String requestAPI = dnsObject.optString("api");
-        String requestMethod = dnsObject.optString("method");
-        String url = requestAPI + orgName + "%23" + appName;
-
-        RestResultBean bean = HttpManager.getInstance().onHttpGet(url);
-        bean.setName(name);
-        list.add(bean);
-        handler.sendEmptyMessage(1);
-        JSONObject resultObject = new JSONObject(bean.getResult());
-        if (resultObject.has("rest")) {
-            JSONObject rest = resultObject.getJSONObject("rest");
-            JSONArray hosts = rest.getJSONArray("hosts");
-            JSONObject jsonObject = hosts.getJSONObject(0);
-            String domain = jsonObject.getString("domain");
-            HttpManager.getInstance().setBaseUrl("https://" + domain + "/" + orgName + "/" + appName + "/");
+        JSONArray dnsArray = obj.optJSONArray("Dns");
+        RestResultBean bean = null;
+        for (int i = 0; i < dnsArray.length(); i++) {
+            JSONObject dnsObject = dnsArray.optJSONObject(i);
+            String name = dnsObject.optString("name");
+            String requestAPI = dnsObject.optString("api");
+            String requestMethod = dnsObject.optString("method");
+            String url = requestAPI + orgName + "%23" + appName;
+            bean = HttpManager.getInstance().onHttpGet(url);
+            bean.setName(name);
+            list.add(bean);
+            handler.sendEmptyMessage(1);
+            if (name.equals("获取dns列表(json)")) {
+                JSONObject resultObject = new JSONObject(bean.getResult());
+                JSONObject rest = resultObject.getJSONObject("rest");
+                JSONArray hosts = rest.getJSONArray("hosts");
+                JSONObject jsonObject = hosts.getJSONObject(0);
+                String domain = jsonObject.getString("domain");
+                HttpManager.getInstance().setBaseUrl("https://" + domain + "/" + orgName + "/" + appName + "/");
+            }
         }
+
+
     }
 
     //获取token
@@ -171,7 +184,8 @@ public class MainActivity extends AppCompatActivity {
         String name = tokenObject.optString("name");
         String requestAPI = tokenObject.optString("api");
         String requestMethod = tokenObject.optString("method");
-        JSONObject requestBody = tokenObject.optJSONObject("body");
+        Object requestBody = tokenObject.optJSONObject("body");
+        requestBody = String.format(requestBody.toString(),grant_type,client_id,client_secret);
 
         RestResultBean bean = HttpManager.getInstance().onHttpPost(requestAPI, requestBody);
         bean.setName(name);
@@ -208,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //消息相关
-    private void testMessageAPI() throws JSONException {
+    private void testMessageAPI() throws JSONException, IOException {
         JSONArray chatArray = obj.optJSONArray("Chat");
         RestResultBean bean = null;
         for (int i = 0; i < chatArray.length(); i++) {
@@ -216,10 +230,18 @@ public class MainActivity extends AppCompatActivity {
             String requestAPI = userObject.optString("api");
             String requestMethod = userObject.optString("method");
             Object requestBody = userObject.opt("body");
+            if(requestMethod.equals("发送附件消息")){
+                requestBody = String.format(requestBody.toString(),uuid,secret);
+            }
             if (requestMethod.equals("GET")) {
                 bean = HttpManager.getInstance().onHttpGet(requestAPI);
             } else if (requestMethod.equals("POST")) {
-                bean = HttpManager.getInstance().onHttpPost(requestAPI, requestBody);
+                if(userObject.optString("name").equals("上传文件")){
+                    InputStream inputstream = getAssets().open("easemob.png");
+                    bean = HttpManager.getInstance().postUpLoadFile(requestAPI,inputstream);
+                }else{
+                    bean = HttpManager.getInstance().onHttpPost(requestAPI, requestBody);
+                }
             } else if (requestMethod.equals("PUT")) {
                 bean = HttpManager.getInstance().onHttpPut(requestAPI, requestBody);
             } else if (requestMethod.equals("DELETE")) {
@@ -229,8 +251,36 @@ public class MainActivity extends AppCompatActivity {
             list.add(bean);
             handler.sendEmptyMessage(1);
             JSONObject resultObject = new JSONObject(bean.getResult());
+            if(userObject.optString("name").equals("上传文件")){
+                JSONArray entities = resultObject.getJSONArray("entities");
+                JSONObject jsonObject = entities.getJSONObject(0);
+                uuid = jsonObject.optString("uuid");
+                secret = jsonObject.optString("share-secret");
+
+            }
         }
     }
+//    private void testFile() throws IOException {
+//        JSONArray chatRoomArray = obj.optJSONArray("File");
+//        RestResultBean bean = null;
+//        for (int i = 0; i < chatRoomArray.length(); i++) {
+//            JSONObject userObject = chatRoomArray.optJSONObject(i);
+//            String requestAPI = userObject.optString("api");
+//            String requestMethod = userObject.optString("method");
+//            Object requestBody = userObject.opt("body");
+//            if (requestMethod.equals("GET")) {
+//                bean = HttpManager.getInstance().onHttpGet(requestAPI);
+//            } else if (requestMethod.equals("POST")) {
+//                InputStream inputstream = getAssets().open("easemob.png");
+//                bean = HttpManager.getInstance().postUpLoadFile(requestAPI,inputstream);
+//            }
+//            bean.setName(userObject.optString("name"));
+//            list.add(bean);
+//            handler.sendEmptyMessage(1);
+//
+//
+//        }
+//    }
 
     //群组相关
     private void testChatGroupAPI() throws JSONException {
@@ -291,31 +341,11 @@ public class MainActivity extends AppCompatActivity {
                 chatRoomId = data.getString("id");
             }
         }
+        //全部执行完后baseurl置空
+        HttpManager.getInstance().setBaseUrl("");
     }
 
-    private void testFile() throws IOException {
-        JSONArray chatRoomArray = obj.optJSONArray("File");
-        RestResultBean bean = null;
-        for (int i = 0; i < chatRoomArray.length(); i++) {
-            JSONObject userObject = chatRoomArray.optJSONObject(i);
-            String requestAPI = userObject.optString("api");
-            String requestMethod = userObject.optString("method");
-            Object requestBody = userObject.opt("body");
-            if (requestMethod.equals("GET")) {
-                bean = HttpManager.getInstance().onHttpGet(requestAPI);
-            } else if (requestMethod.equals("POST")) {
-                InputStream inputstream = getAssets().open("easemob.png");
-                bean = HttpManager.getInstance().postUpLoadFile(requestAPI,inputstream);
-            }
-            bean.setName(userObject.optString("name"));
-            list.add(bean);
-            handler.sendEmptyMessage(1);
-//            JSONObject resultObject = new JSONObject(bean.getResult());
-            //全部执行完后baseurl置空
-            HttpManager.getInstance().setBaseUrl("");
 
-        }
-    }
 
     /**
      * --------------------------- RecyclerView 滚动监听 --------------------------------
